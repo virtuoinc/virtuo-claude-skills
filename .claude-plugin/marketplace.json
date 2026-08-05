@@ -1,0 +1,59 @@
+{
+  "name": "virtuo-skills",
+  "owner": {
+    "name": "Virtuo"
+  },
+  "description": "Virtuo company skills for Claude Desktop",
+  "plugins": [
+    {
+      "name": "virtuo",
+      "description": "Universal Virtuo skills and MCP integrations available to all employees: Asana task management, OKR tracking, project status, meeting prep and recap, email triage, daily briefings, document search, and Notion docs.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/asana-my-tasks",
+        "./skills/asana-task-capture",
+        "./skills/asana-okr-update",
+        "./skills/asana-okr-review",
+        "./skills/asana-project-status",
+        "./skills/meeting-prep",
+        "./skills/meeting-recap",
+        "./skills/email-triage",
+        "./skills/daily-briefing",
+        "./skills/document-search",
+        "./skills/notion-search",
+        "./skills/notion-draft",
+        "./skills/notion-summarize",
+        "./skills/notion-update"
+      ]
+    },
+    {
+      "name": "gtm",
+      "description": "Go-to-Market department skills for sales, marketing, and revenue teams.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/pipeline-review",
+        "./skills/funnel-metrics",
+        "./skills/campaign-performance",
+        "./skills/gtm-digest",
+        "./skills/lead-research",
+        "./skills/deal-prep"
+      ]
+    },
+    {
+      "name": "cx",
+      "description": "Customer Experience department skills for support and success teams.",
+      "source": "./",
+      "strict": false,
+      "skills": []
+    },
+    {
+      "name": "product",
+      "description": "Product department skills for product management and design teams.",
+      "source": "./",
+      "strict": false,
+      "skills": []
+    }
+  ]
+}
