@@ -20,20 +20,46 @@ Install individual skill bundles from there.
 
 ## Skill catalog
 
-| Plugin name | Skills included | MCP servers required |
-|-------------|----------------|----------------------|
-| `microsoft365` | meeting-prep, meeting-recap, email-triage, daily-briefing, document-search | `Microsoft 365`, `Hubspot`, `Granola`, `Asana` |
+### `virtuo` — Universal skills (all employees)
+
+| Skill | Slash command | MCP servers |
+|-------|--------------|-------------|
+| Meeting Prep | `/meeting-prep` | `Microsoft 365`, `Hubspot`, `Granola` |
+| Meeting Recap | `/meeting-recap` | `Microsoft 365`, `Granola`, `Asana` |
+| Email Triage | `/email-triage` | `Microsoft 365` |
+| Daily Briefing | `/daily-briefing` | `Microsoft 365` |
+| Document Search | `/document-search` | `Microsoft 365` |
+| Asana My Tasks | `/asana-my-tasks` | `Asana` |
+| Asana Task Capture | `/asana-task-capture` | `Asana` |
+| Asana OKR Update | `/asana-okr-update` | `Asana` |
+| Asana OKR Review | `/asana-okr-review` | `Asana` |
+| Asana Project Status | `/asana-project-status` | `Asana` |
+| Notion Search | `/notion-search` | `Notion` |
+| Notion Draft | `/notion-draft` | `Notion` |
+| Notion Summarize | `/notion-summarize` | `Notion` |
+| Notion Update | `/notion-update` | `Notion` |
+
+### `gtm` — Go-to-Market team
+
+| Skill | Slash command | MCP servers |
+|-------|--------------|-------------|
+| Pipeline Review | `/pipeline-review` | `Hubspot` |
+| Funnel Metrics | `/funnel-metrics` | `Hubspot` |
+| Campaign Performance | `/campaign-performance` | `Hubspot` |
+| GTM Digest | `/gtm-digest` | `Hubspot`, `Granola` |
+| Lead Research | `/lead-research` | `Hubspot`, `Granola`, `Web search` |
+| Deal Prep | `/deal-prep` | `Microsoft 365`, `Hubspot`, `Granola`, `Web search` |
 
 ## Contributing a skill
 
 See the authoring rules in [.github/copilot-instructions.md](.github/copilot-instructions.md).
 
 Quick summary:
-1. Copy `skills/_template/` → `skills/<gerund-skill-name>/`
+1. Copy `skills/_template/` → `skills/<skill-name>/`
 2. Fill in `SKILL.md` (name, description, MCP requirements, instructions)
 3. Add an entry to `.claude-plugin/marketplace.json`
 4. Open a PR — skills are reviewed before merging
 
 All skills must include an `## MCP Requirements` section specifying the exact
-MCP server and tool names (e.g. `Jira:create_issue`) so Claude makes precise
-tool calls rather than guessing.
+MCP server and tool names (e.g. `Hubspot:search_crm_objects`) so Claude makes
+precise tool calls rather than guessing.
