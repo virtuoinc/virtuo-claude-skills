@@ -43,10 +43,13 @@
     },
     {
       "name": "cx",
-      "description": "Customer Experience department skills for support and success teams.",
+      "description": "Customer Experience department skills for support and success teams: CX knowledge wiki lookup for geographic process nuances and provider availability, and provider search combining Virtuo-approved partners with web results.",
       "source": "./",
       "strict": false,
-      "skills": []
+      "skills": [
+        "./skills/cx-wiki",
+        "./skills/cx-provider-search"
+      ]
     },
     {
       "name": "product",
