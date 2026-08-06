@@ -13,9 +13,9 @@ description: >
 
 | MCP Server   | Tool                     | Purpose                                                                      |
 |--------------|--------------------------|------------------------------------------------------------------------------|
-| `notion`     | `notion:notion-search`   | Search the CX wiki for known Virtuo providers in the region                  |
-| `notion`     | `notion:notion-fetch`    | Retrieve provider details from CX wiki pages                                 |
-| `Web search` | `Web search:web_search`  | Find actual providers, their contact details, and review scores              |
+| `notion`     | `notion-notion-search`   | Search the CX wiki for known Virtuo providers in the region                  |
+| `notion`     | `notion-notion-fetch`    | Retrieve provider details from CX wiki pages                                 |
+| `Web search` | `web_search`  | Find actual providers, their contact details, and review scores              |
 
 ## When to use this skill
 
