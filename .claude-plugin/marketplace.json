@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "virtuo",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "description": "Universal Virtuo skills and MCP integrations available to all employees: Asana task management, OKR tracking, project status, meeting prep and recap, email triage, daily briefings, document search, and Notion docs.",
       "source": "./",
       "strict": false,
