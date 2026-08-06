@@ -14,11 +14,9 @@ description: >
 
 | MCP Server | Tool                                   | Purpose                                              |
 |------------|----------------------------------------|------------------------------------------------------|
-| `Asana`    | `Asana:asana-get_portfolios`           | List goal portfolios                                 |
-| `Asana`    | `Asana:asana-get_items_for_portfolio`  | Get goals and sub-goals within a portfolio           |
+| `Asana`    | `Asana:asana-get_items_for_portfolio`  | Get goals and sub-goals from the pinned goals list   |
 | `Asana`    | `Asana:asana-get_status_overview`      | Retrieve status, progress %, and last update per goal|
-| `Asana`    | `Asana:asana-search_objects`           | Find goals or portfolios by name, team, or period    |
-| `Asana`    | `Asana:asana-get_project`              | Get goal or project metadata for context             |
+| `Asana`    | `Asana:asana-get_project`              | Get goal metadata for context                        |
 
 ## When to use this skill
 
@@ -33,21 +31,17 @@ Do NOT use this skill when:
 
 ## Instructions
 
-### Step 1: Determine scope
+### Step 1: Retrieve goals from the pinned goals list
 
-Ask the user (or infer from context) which goals to review:
-- **All company goals** — default
-- **Specific time period** (e.g. H2 FY26) — use as a filter
-- **Specific team or portfolio** — call `Asana:asana-search_objects` to locate it
-- **Goals I own** — filter by current user as owner
+Always use the following fixed goals list — do not search broadly or prompt the user for a portfolio:
 
-### Step 2: Retrieve goals
+- **Goals list GID:** `1210884092928621`
+- **Workspace GID:** `677814999362678`
+- **Direct URL:** https://app.asana.com/1/677814999362678/goals/list/1210884092928621
 
-Call `Asana:asana-get_portfolios` to list available goal portfolios.
+Call `Asana:asana-get_items_for_portfolio` with `portfolio_gid: "1210884092928621"` to retrieve all goals and sub-goals including their GIDs and owner metadata.
 
-For each relevant portfolio, call `Asana:asana-get_items_for_portfolio` to get the full list of goals and sub-goals including their GIDs and owner metadata.
-
-### Step 3: Fetch status for all goals (in parallel)
+### Step 2: Fetch status for all goals (in parallel)
 
 For each goal and sub-goal, call `Asana:asana-get_status_overview` to retrieve:
 - Current status (on track / at risk / off track)
@@ -57,7 +51,7 @@ For each goal and sub-goal, call `Asana:asana-get_status_overview` to retrieve:
 
 Run all fetches in parallel.
 
-### Step 4: Resolve hierarchy and roll up
+### Step 3: Resolve hierarchy and roll up
 
 Build the parent/child goal tree from the portfolio item structure.
 
@@ -71,7 +65,7 @@ For each parent goal:
 
 Flag any goal whose last update is more than 14 days old as **Stale**, regardless of last known status.
 
-### Step 5: Generate the health digest
+### Step 4: Generate the health digest
 
 Structure the output as:
 
