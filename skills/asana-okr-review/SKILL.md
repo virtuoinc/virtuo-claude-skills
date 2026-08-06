@@ -1,11 +1,7 @@
 ---
 name: asana-okr-review
 description: >
-  Generates a structured health summary of company OKRs and goals in Asana.
-  Retrieves current status, progress, and recent updates across all goals, rolls
-  up sub-goal status to parent goals using worst-child propagation, and produces
-  an at-a-glance digest grouped by on-track, at-risk, and off-track with key
-  blockers and wins called out. Invoke with /asana-okr-review.
+  Get a health summary of Virtuo OKRs and goals for the current quarter.
 ---
 
 # Reviewing Company OKR Health
@@ -14,7 +10,7 @@ description: >
 
 | MCP Server | Tool                                   | Purpose                                              |
 |------------|----------------------------------------|------------------------------------------------------|
-| `Asana`    | `Asana:asana-get_items_for_portfolio`  | Get goals and sub-goals from the pinned goals list   |
+| `Asana`    | `Asana:asana-get_items_for_portfolio`  | Get goals and sub-goals from the 2026 Q3–Q4 portfolio |
 | `Asana`    | `Asana:asana-get_status_overview`      | Retrieve status, progress %, and last update per goal|
 | `Asana`    | `Asana:asana-get_project`              | Get goal metadata for context                        |
 
@@ -31,15 +27,17 @@ Do NOT use this skill when:
 
 ## Instructions
 
-### Step 1: Retrieve goals from the pinned goals list
+### Step 1: Retrieve goals from the portfolio
 
-Always use the following fixed goals list — do not search broadly or prompt the user for a portfolio:
+Always use the following fixed portfolio — do not search broadly or prompt the user for a portfolio GID.
 
-- **Goals list GID:** `1210884092928621`
+This skill is scoped to **2026 Q3–Q4 OKRs** only.
+
+- **Portfolio GID:** `1215943284490116`
 - **Workspace GID:** `677814999362678`
-- **Direct URL:** https://app.asana.com/1/677814999362678/goals/list/1210884092928621
+- **Direct URL:** https://app.asana.com/1/677814999362678/goals/list/1215943284490116
 
-Call `Asana:asana-get_items_for_portfolio` with `portfolio_gid: "1210884092928621"` to retrieve all goals and sub-goals including their GIDs and owner metadata.
+Call `Asana:asana-get_items_for_portfolio` with `portfolio_gid: "1215943284490116"` to retrieve all goals and sub-goals including their GIDs and owner metadata.
 
 ### Step 2: Fetch status for all goals (in parallel)
 
@@ -71,7 +69,7 @@ Structure the output as:
 
 ---
 
-## OKR Health Summary — [Time Period] — [Date]
+## OKR Health Summary — 2026 Q3–Q4 — [Date]
 
 ### 🟢 On Track ([N] goals)
 For each: **Goal name** — [Progress %] — [Owner]
