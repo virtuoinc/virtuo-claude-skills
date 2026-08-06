@@ -11,11 +11,11 @@ description: >
 
 ## MCP Requirements
 
-| MCP Server   | Tool                     | Purpose                                                     |
-|--------------|--------------------------|-------------------------------------------------------------|
-| `notion`     | `notion:notion-search`   | Search the CX wiki for known Virtuo providers in the region |
-| `notion`     | `notion:notion-fetch`    | Retrieve provider details from CX wiki pages                |
-| `Web search` | `Web search:web_search`  | Find additional providers not yet in the Virtuo network     |
+| MCP Server   | Tool                     | Purpose                                                                      |
+|--------------|--------------------------|------------------------------------------------------------------------------|
+| `notion`     | `notion:notion-search`   | Search the CX wiki for known Virtuo providers in the region                  |
+| `notion`     | `notion:notion-fetch`    | Retrieve provider details from CX wiki pages                                 |
+| `Web search` | `Web search:web_search`  | Find actual providers, their contact details, and review scores              |
 
 ## When to use this skill
 
@@ -57,11 +57,22 @@ Extract: provider names, contact details, coverage area, and any notes on approv
 
 ### Step 4: Web search for gaps
 
-If the wiki returned no providers for the requested geography and service type, or if the user explicitly wants additional options, call `Web search:web_search` with:
-- Query: `"[service type] providers [geography]"` — e.g. `"roadside assistance providers Spain"`
-- Run a second query if useful: `"[service type] companies [city or country] B2B"`
+If the wiki returned no providers for the requested geography and service type, or if the user explicitly wants additional options, run the following web searches (in parallel where possible):
 
-Extract: company name, website, coverage area, and any available contact or pricing information.
+**Search A — Find actual providers:**
+- Query: `"[service type] company [geography]"` — e.g. `"roadside assistance company Spain"`
+- Exclude aggregators, directories, and marketplaces (e.g. Yelp lists, Angi, Bark, Thumbtack, HomeAdvisor). Only surface individual businesses that directly provide the service.
+
+**Search B — Contact details:**
+For each candidate provider found, search `"[provider name] phone email contact [geography]"` to retrieve their website, phone number, and email address.
+
+**Search C — Review scores:**
+For each provider, search `"[provider name] [geography] reviews"` to find:
+- Google Places star rating and review count
+- Scores from review sites such as Trustpilot, Yelp, Homestars, or similar local platforms
+- A brief summary of recurring themes in reviews (e.g. "Praised for fast response times; some complaints about billing")
+
+Only include providers where at least a website or phone number can be confirmed. Discard any result that is an aggregator, lead-generation site, or comparison platform rather than an actual service provider.
 
 ### Step 5: Present results
 
@@ -74,22 +85,28 @@ Separate the two categories clearly:
 ### Virtuo-Approved Providers
 *(from the CX Knowledge Wiki)*
 
-| Provider | Coverage | Notes | Source |
-|----------|----------|-------|--------|
-| [Name] | [Area] | [Preferred partner / approved / etc.] | [Wiki page link] |
+| Provider | Website | Phone | Email | Coverage | Notes | Source |
+|----------|---------|-------|-------|----------|-------|--------|
+| [Name] | [URL] | [Phone] | [Email] | [Area] | [Preferred partner / approved / etc.] | [Wiki page link] |
 
 *If none found: "No Virtuo-approved providers found in the CX wiki for this geography and service type."*
 
 ### Additional Options
 *(from web search — not yet Virtuo-approved)*
 
-| Provider | Website | Coverage | Notes |
-|----------|---------|----------|-------|
-| [Name] | [URL] | [Area] | [Any relevant detail] |
+For each provider, include a contact block and review summary:
+
+**[Provider Name]**
+- **Website:** [URL]
+- **Phone:** [number or "not found"]
+- **Email:** [address or "not found"]
+- **Coverage:** [area]
+- **Reviews:** [Google ★X.X (N reviews)] | [Yelp / Trustpilot / Homestars: X/5 if available]
+- **Summary:** [2–3 sentence synthesis of what customers say — strengths and any notable concerns]
 
 ---
 
-If only wiki results exist and they fully answer the question, skip the web search section. Do not present external options as equivalent to approved providers.
+If only wiki results exist and they fully answer the question, skip the web search section. Do not present external options as equivalent to approved providers. Never include aggregators, directories, or lead-generation platforms in the results.
 
 ## Keywords
 
