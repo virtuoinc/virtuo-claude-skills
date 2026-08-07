@@ -2,9 +2,10 @@
 name: virtuo-meeting-recap
 description: >
   Retrieves and summarizes meeting transcripts from Microsoft Teams or Granola,
-  extracting key decisions, action items, and next steps. Sends a formatted
-  recap email to attendees and optionally posts a summary to a Teams channel.
-  Invoke with /virtuo-meeting-recap.
+  extracting key decisions, action items, and next steps. Offers to create
+  action items as Asana tasks, send a formatted recap email to attendees, and
+  post a summary to a Teams channel. Always confirms before creating tasks or
+  sending messages. Invoke with /virtuo-meeting-recap.
 ---
 
 # Summarizing Meeting Transcripts
@@ -20,7 +21,17 @@ description: >
 | `Microsoft 365` | `ChannelMessage.Send`              | Post recap to a Teams channel (optional)        |
 | `granola`       | `granola-query_granola_meetings`   | Search for meeting in Granola by name/date      |
 | `granola`       | `granola-get_meeting_transcript`   | Retrieve full Granola meeting transcript        |
+| `Asana`         | `mcp_asana_oauth_p_create_tasks`   | Create action items as Asana tasks              |
+| `Asana`         | `mcp_asana_oauth_p_get_projects`   | Look up the target Asana project                |
 
+## Confirmation rules
+
+**Always ask for explicit confirmation before:**
+- Creating any Asana tasks
+- Drafting or sending any email
+- Posting to a Teams channel
+
+Never perform any of these actions proactively, even if the user previously said "yes" to a similar action in the same conversation.
 
 ## When to use this skill
 
@@ -74,12 +85,25 @@ Analyze the full transcript and extract:
 
 Show the full structured recap to the user.
 
-Then ask:
-- **"Send recap email to attendees?"** — if yes, compose and send via `Mail.ReadWrite`:
-  - To: all meeting attendees (from the calendar event)
-  - Subject: "Recap: [Meeting Subject] — [Date]"
-  - Body: the structured recap formatted in plain text
-- **"Post to a Teams channel?"** — if yes, ask which channel, then call `ChannelMessage.Send`
+Then present these options and **wait for explicit confirmation before acting on any of them**:
+
+- **"Create Asana tasks for action items?"** — if yes:
+  1. Ask which Asana project to add tasks to, or call `mcp_asana_oauth_p_get_projects` to suggest recent projects
+  2. Show the user the list of tasks that will be created (owner, due date, description) and confirm
+  3. Only after confirmation, call `mcp_asana_oauth_p_create_tasks` for each action item
+  4. Report back which tasks were created with links
+
+- **"Draft recap email to attendees?"** — if yes:
+  1. Show the full draft (To, Subject, Body) and ask for confirmation or edits
+  2. Only after confirmation, send via `Mail.ReadWrite`:
+     - To: all meeting attendees (from the calendar event)
+     - Subject: "Recap: [Meeting Subject] — [Date]"
+     - Body: the structured recap formatted in plain text
+
+- **"Post to a Teams channel?"** — if yes:
+  1. Ask which channel
+  2. Show the message that will be posted and confirm
+  3. Only after confirmation, call `ChannelMessage.Send`
 
 ## Keywords
 
