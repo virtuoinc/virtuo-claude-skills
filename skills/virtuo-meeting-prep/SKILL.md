@@ -1,12 +1,12 @@
 ---
-name: meeting-prep
+name: virtuo-meeting-prep
 description: >
   Prepares a comprehensive pre-meeting briefing by pulling together attendee
   context, past communications, meeting transcripts, CRM history, and relevant
   documents from Microsoft 365, HubSpot, and Granola. Produces a structured
   briefing card covering who's attending, relationship history, recent email
   threads, past meeting notes, CRM deal context for external contacts, and
-  relevant files. Invoke with /meeting-prep.
+  relevant files. Invoke with /virtuo-meeting-prep.
 ---
 
 # Preparing for Meetings

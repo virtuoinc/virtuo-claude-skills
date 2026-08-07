@@ -1,11 +1,11 @@
 ---
-name: daily-briefing
+name: virtuo-daily-briefing
 description: >
   Delivers a prioritized daily briefing combining today's calendar, unread
   emails since the last workday, and unread Teams chat and channel messages.
   Synthesizes everything into a single digest to start or end the workday with
   full situational awareness. Covers calendar events, email highlights, and
-  Teams activity in one response. Invoke with /daily-briefing.
+  Teams activity in one response. Invoke with /virtuo-daily-briefing.
 ---
 
 # Briefing the Daily Workday

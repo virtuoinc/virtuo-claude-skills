@@ -12,20 +12,12 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/asana-my-tasks",
-        "./skills/asana-task-capture",
-        "./skills/asana-okr-update",
-        "./skills/asana-okr-review",
-        "./skills/asana-project-status",
-        "./skills/meeting-prep",
-        "./skills/meeting-recap",
-        "./skills/email-triage",
-        "./skills/daily-briefing",
-        "./skills/document-search",
-        "./skills/notion-search",
-        "./skills/notion-draft",
-        "./skills/notion-summarize",
-        "./skills/notion-update"
+        "./skills/virtuo-okr-review",
+        "./skills/virtuo-meeting-prep",
+        "./skills/virtuo-meeting-recap",
+        "./skills/virtuo-email-triage",
+        "./skills/virtuo-daily-briefing",
+        "./skills/virtuo-document-search"
       ]
     },
     {
@@ -34,12 +26,12 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/pipeline-review",
-        "./skills/funnel-metrics",
-        "./skills/campaign-performance",
+        "./skills/gtm-pipeline-review",
+        "./skills/gtm-funnel-metrics",
+        "./skills/gtm-campaign-performance",
         "./skills/gtm-digest",
-        "./skills/lead-research",
-        "./skills/deal-prep"
+        "./skills/gtm-lead-research",
+        "./skills/gtm-deal-prep"
       ]
     },
     {

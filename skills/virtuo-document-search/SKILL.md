@@ -1,11 +1,11 @@
 ---
-name: document-search
+name: virtuo-document-search
 description: >
-  Searches Microsoft 365 OneDrive and SharePoint for documents, files, and
+  Searches personal OneDrive and Virtuo SharePoint for documents, files, and
   site content matching a topic, project, or keyword, then summarizes the most
   relevant results with direct links. Returns ranked results with AI-generated
   summaries so the user can identify the right file without opening each one.
-  Invoke with /document-search.
+  Invoke with /virtuo-document-search.
 ---
 
 # Researching Documents
@@ -19,7 +19,6 @@ description: >
 | `Microsoft 365` | `Microsoft 365:get_drive_file_content`  | Read file content for summarization             |
 | `Microsoft 365` | `Microsoft 365:upload_file`             | Save research summary to OneDrive (optional)    |
 
-> Tool names are based on common MCP conventions — verify exact names against your configured MCP servers in Claude Desktop.
 
 ## When to use this skill
 

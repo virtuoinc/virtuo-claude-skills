@@ -1,21 +1,21 @@
 ---
-name: pipeline-review
+name: gtm-pipeline-review
 description: >
   Pulls a live snapshot of the HubSpot deal pipeline — shows deals grouped by stage,
   flags at-risk deals with no recent activity or past their close date, and breaks down
   the pipeline by owner. Use when asked to review the pipeline, check deal stages, find
-  stuck deals, or get a pipeline health summary. Invoke with /pipeline-review.
+  stuck deals, or get a pipeline health summary. Invoke with /gtm-pipeline-review.
 ---
 
-# Pipeline Review
+# GTM Pipeline Review
 
 ## MCP Requirements
 
-| MCP Server | Tool                               | Purpose                                        |
-|------------|------------------------------------|------------------------------------------------|
-| `Hubspot`  | `Hubspot:search_crm_objects`       | Fetch all open deals grouped by stage          |
-| `Hubspot`  | `Hubspot:search_owners`            | Resolve owner names from IDs                   |
-| `Hubspot`  | `Hubspot:get_properties`           | Resolve deal stage enum labels (optional)      |
+| MCP Server | Tool                           | Purpose                                                   |
+|------------|--------------------------------|-----------------------------------------------------------|
+| `hubspot`  | `hubspot-search_crm_objects`   | Fetch open deals in the New Broker Sales pipeline         |
+| `hubspot`  | `hubspot-search_owners`        | Resolve owner names from IDs                              |
+| `hubspot`  | `hubspot-get_properties`       | Resolve deal stage enum labels (optional)                 |
 
 ## When to use this skill
 
@@ -33,16 +33,16 @@ Do NOT use this skill when:
 
 ### Step 1: Determine scope
 
-Infer from context, or ask the user, whether they want:
+This skill always scopes to the **New Broker Sales** pipeline (ID: `811852437`). Infer from context, or ask the user, whether they want:
 - **All open deals** (default)
 - A specific owner's deals
 - Deals closing within a specific window (e.g. this quarter)
 
 ### Step 2: Fetch open deals
 
-Call `Hubspot:search_crm_objects` with:
+Call `hubspot-search_crm_objects` with:
 - `objectType`: `deals`
-- `filterGroups`: exclude `closedwon` and `closedlost` stages (i.e. all active stages)
+- `filterGroups`: `pipeline` = `"811852437"` (New Broker Sales); exclude `closedwon` and `closedlost` stages
 - `properties`: `["dealname", "dealstage", "amount", "closedate", "hubspot_owner_id", "hs_lastmodifieddate", "hs_activity_count"]`
 - `limit`: 200
 
@@ -51,8 +51,8 @@ If the user specified a close date window, add a filter for `closedate` within t
 
 ### Step 3: Resolve owner names and stage labels (run in parallel)
 
-- Call `Hubspot:search_owners` to map all owner IDs present in the results to display names.
-- If stage labels are not self-explanatory, call `Hubspot:get_properties` for `objectType: deals`, `propertyName: dealstage` to get the ordered stage list and labels.
+- Call `hubspot-search_owners` to map all owner IDs present in the results to display names.
+- If stage labels are not self-explanatory, call `hubspot-get_properties` for `objectType: deals`, `propertyName: dealstage` to get the ordered stage list and labels.
 
 ### Step 4: Analyse and flag deals
 

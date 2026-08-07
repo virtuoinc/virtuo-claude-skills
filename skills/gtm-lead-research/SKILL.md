@@ -1,23 +1,23 @@
 ---
-name: lead-research
+name: gtm-lead-research
 description: >
   Researches a prospect or lead by pulling their HubSpot contact and deal history,
   checking Granola for any prior meeting notes, and running web searches for company
   overview, recent news, funding, and key people. Produces a structured lead profile
   with ICP fit signals and a suggested outreach angle. Use when asked to research a lead,
-  prospect, or company before first contact or during qualification. Invoke with /lead-research.
+  prospect, or company before first contact or during qualification. Invoke with /gtm-lead-research.
 ---
 
 # Lead Research
 
 ## MCP Requirements
 
-| MCP Server   | Tool                             | Purpose                                               |
-|--------------|----------------------------------|-------------------------------------------------------|
-| `Hubspot`    | `Hubspot:search_crm_objects`     | Find existing contact record and associated deals     |
-| `Hubspot`    | `Hubspot:search_conversations`   | Pull any prior inbox comms with this contact          |
-| `Granola`    | `Granola:query_granola_meetings` | Check for any recorded past meetings with this person |
-| `Web search` | `Web search:web_search`          | Research company overview, news, funding, key people  |
+| MCP Server   | Tool                             | Purpose                                                           |
+|--------------|----------------------------------|-------------------------------------------------------------------|
+| `hubspot`    | `hubspot-search_crm_objects`     | Find existing contact record and deals in New Broker Sales pipeline |
+| `hubspot`    | `hubspot-query_crm_data`         | Query prior engagement records (emails, calls, notes) for the contact |
+| `granola`    | `granola-query_granola_meetings` | Check for any recorded past meetings with this person             |
+| `Web search` | `web_search`                     | Research company overview, news, funding, key people              |
 
 ## When to use this skill
 
@@ -43,25 +43,25 @@ If only a company name is given, proceed without a contact name. If only a name 
 
 ### Step 2: Look up HubSpot and Granola history (run all in parallel)
 
-**Call A** — `Hubspot:search_crm_objects` for the contact:
+**Call A** — `hubspot-search_crm_objects` for the contact:
 - `objectType`: `contacts`
 - Filter by email if available; otherwise by `firstname` + `lastname` or company name
 - `properties`: `["firstname", "lastname", "email", "company", "jobtitle", "hs_lead_status", "hubspot_owner_id", "createdate", "notes_last_contacted"]`
 
-**Call B** — `Hubspot:search_crm_objects` for associated deals (run after Call A if a contact is found, otherwise skip):
+**Call B** — `hubspot-search_crm_objects` for associated deals (run after Call A if a contact is found, otherwise skip):
 - `objectType`: `deals`
-- Filter by associated contact ID
+- Filter by associated contact ID; `pipeline` = `"811852437"` (New Broker Sales)
 - `properties`: `["dealname", "dealstage", "amount", "closedate", "hs_lastmodifieddate"]`
 
-**Call C** — `Hubspot:search_conversations`:
-- Search by the contact's email or company name to find any prior inbox threads or logged calls
+**Call C** — `hubspot-query_crm_data`:
+- Query engagement records (emails, calls, notes) for the contact by email or company name
 
-**Call D** — `Granola:query_granola_meetings`:
+**Call D** — `granola-query_granola_meetings`:
 - Query: "Have we met with [contact name] or [company name]?"
 
 ### Step 3: Run web research (run all queries in parallel)
 
-Call `Web search:web_search` for each of the following:
+Call `web_search` for each of the following:
 - `"[Company name]" overview product customers`
 - `"[Company name]" funding news site:techcrunch.com OR site:crunchbase.com`
 - `"[Company name]" recent news [current year]`

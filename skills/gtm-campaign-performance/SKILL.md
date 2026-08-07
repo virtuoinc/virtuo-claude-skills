@@ -1,22 +1,25 @@
 ---
-name: campaign-performance
+name: gtm-campaign-performance
 description: >
   Pulls HubSpot campaign analytics and marketing email performance — opens, clicks, bounces,
   revenue attribution, and asset-level metrics. Scores each campaign and surfaces
   recommendations. Use when asked for campaign performance, email stats, marketing ROI,
-  attribution data, or campaign health. Invoke with /campaign-performance.
+  attribution data, or campaign health. Invoke with /gtm-campaign-performance.
 ---
 
 # Campaign Performance
 
 ## MCP Requirements
 
-| MCP Server | Tool                                  | Purpose                                              |
-|------------|---------------------------------------|------------------------------------------------------|
-| `Hubspot`  | `Hubspot:get_campaign_analytics`      | Fetch campaign-level metrics and revenue attribution |
-| `Hubspot`  | `Hubspot:get_campaign_asset_metrics`  | Fetch per-asset metrics for emails, pages, and CTAs  |
-| `Hubspot`  | `Hubspot:get_marketing_email_analytics` | Fetch email open/click/bounce rates and health     |
-| `Hubspot`  | `Hubspot:search_crm_objects`          | Fetch deals attributed to a campaign (optional)      |
+| MCP Server | Tool                                        | Purpose                                                                                                      |
+|------------|---------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `hubspot`  | `hubspot-read_campaign_data`                | Read campaign-level analytics — contacts reached, sessions, impressions, and engagement counts               |
+| `hubspot`  | `hubspot-get_campaign_attribution_reports`  | Pull revenue attribution reports showing attributed new contacts, influenced contacts, deals, and revenue    |
+| `hubspot`  | `hubspot-get_content_analytics_report`      | Get marketing email performance stats — sends, deliveries, opens, clicks, bounces, unsubscribes, and health  |
+| `hubspot`  | `hubspot-manage_campaign_objects`           | List and access campaign assets (emails, landing pages, CTAs) and their associated properties                |
+| `hubspot`  | `hubspot-search_crm_objects`                | Search and filter deals, contacts, or CRM records attributed to or influenced by a campaign                  |
+| `hubspot`  | `hubspot-get_crm_objects`                   | Fetch specific CRM records by ID (up to 100 per request) for deeper deal or contact attribution analysis     |
+| `hubspot`  | `hubspot-query_crm_data`                    | Run advanced queries across CRM data for custom attribution and pipeline analysis across object types         |
 
 ## When to use this skill
 
@@ -28,7 +31,7 @@ Use this skill when:
 - The user asks for a campaign health check or email performance report
 
 Do NOT use this skill when:
-- The user wants deal pipeline or funnel data (use `/pipeline-review` or `/funnel-metrics`)
+- The user wants deal pipeline or funnel data (use `/gtm-pipeline-review` or `/gtm-funnel-metrics`)
 - The user wants a combined cross-channel summary (use `/gtm-digest`)
 
 ## Instructions
@@ -41,24 +44,29 @@ Ask if a time filter is needed (e.g. campaigns active in the last 30 days).
 
 ### Step 2: Fetch campaign analytics (run all calls in parallel)
 
-**Call A** — `Hubspot:get_campaign_analytics` with:
+**Call A** — `hubspot-read_campaign_data` with:
 - `campaignId`: the campaign ID (or list of IDs for overview)
 - `reportingView`: `metrics`
 
 This returns contacts reached, sessions, impressions, and engagement counts.
 
-**Call B** — `Hubspot:get_campaign_analytics` with the same campaign(s):
+**Call B** — `hubspot-get_campaign_attribution_reports` with the same campaign(s):
 - `reportingView`: `revenue-attribution`
 
 This returns attributed new contacts, influenced contacts, attributed deals, and revenue.
 
-**Call C** — `Hubspot:get_campaign_asset_metrics` with:
+**Call C** — `hubspot-manage_campaign_objects` with:
 - `campaignId`: the campaign ID
-- Retrieve metrics for all available asset types (emails, landing pages, CTAs)
+- Retrieve all asset types (emails, landing pages, CTAs) linked to the campaign
 
-**Call D** — `Hubspot:get_marketing_email_analytics`:
+**Call D** — `hubspot-get_content_analytics_report`:
 - Filter for emails linked to this campaign (use email asset IDs from Call C)
 - Request aggregate stats: `delivered`, `opened`, `clicked`, `bounced`, `unsubscribed`
+
+If specific deal or contact records need deeper inspection, follow up with:
+- `hubspot-get_crm_objects` to fetch records by ID
+- `hubspot-search_crm_objects` to filter deals/contacts by campaign association
+- `hubspot-query_crm_data` for advanced cross-object attribution queries
 
 ### Step 3: Score assets and flag health issues
 

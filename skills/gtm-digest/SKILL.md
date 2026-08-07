@@ -14,11 +14,11 @@ description: >
 
 | MCP Server | Tool                                    | Purpose                                              |
 |------------|-----------------------------------------|------------------------------------------------------|
-| `Hubspot`  | `Hubspot:search_crm_objects`            | Fetch pipeline snapshot and recent won/lost deals    |
-| `Hubspot`  | `Hubspot:get_campaign_analytics`        | Fetch campaign-level performance metrics             |
-| `Hubspot`  | `Hubspot:get_marketing_email_analytics` | Fetch email engagement stats for the period          |
-| `Granola`  | `Granola:list_meetings`                 | List customer meetings recorded in the past week     |
-| `Granola`  | `Granola:query_granola_meetings`        | Identify themes, commitments, and competitor mentions|
+| `hubspot`  | `hubspot-search_crm_objects`            | Fetch New Broker Sales pipeline snapshot and recent won/lost deals |
+| `hubspot`  | `hubspot-read_campaign_data`            | Fetch campaign-level performance metrics             |
+| `hubspot`  | `hubspot-get_content_analytics_report`  | Fetch email engagement stats for the period          |
+| `granola`  | `granola-list_meetings`                 | List customer meetings recorded in the past week     |
+| `granola`  | `granola-query_granola_meetings`        | Identify themes, commitments, and competitor mentions|
 
 ## When to use this skill
 
@@ -41,31 +41,31 @@ Default to the last 7 days. Confirm with the user or adjust to a different perio
 
 Run all five calls simultaneously:
 
-**Call A** — `Hubspot:search_crm_objects` for the **open pipeline snapshot**:
+**Call A** — `hubspot-search_crm_objects` for the **open pipeline snapshot**:
 - `objectType`: `deals`
-- `filterGroups`: exclude `closedwon` and `closedlost` stages
+- `filterGroups`: `pipeline` = `"811852437"` (New Broker Sales); exclude `closedwon` and `closedlost` stages
 - `properties`: `["dealname", "dealstage", "amount", "closedate", "hubspot_owner_id", "hs_lastmodifieddate"]`
 - `limit`: 200
 
-**Call B** — `Hubspot:search_crm_objects` for **deals closed in the reporting window**:
+**Call B** — `hubspot-search_crm_objects` for **deals closed in the reporting window**:
 - `objectType`: `deals`
-- `filterGroups`: `closedate` within the window; `dealstage` is `closedwon` OR `closedlost`
+- `filterGroups`: `closedate` within the window; `dealstage` is `closedwon` OR `closedlost`; `pipeline` = `"811852437"` (New Broker Sales)
 - `properties`: `["dealname", "dealstage", "amount", "closedate", "hubspot_owner_id"]`
 - `limit`: 50
 
-**Call C** — `Hubspot:get_campaign_analytics`:
+**Call C** — `hubspot-read_campaign_data`:
 - Fetch `metrics` view for all campaigns active during the reporting window
 
-**Call D** — `Hubspot:get_marketing_email_analytics`:
+**Call D** — `hubspot-get_content_analytics_report`:
 - Fetch aggregate stats for emails sent within the reporting window
 
-**Call E** — `Granola:list_meetings`:
+**Call E** — `granola-list_meetings`:
 - Time range: start and end of the reporting window
 - Returns meeting titles and metadata for all recorded meetings
 
 ### Step 3: Surface meeting themes from Granola
 
-Using the meeting list from Call E, call `Granola:query_granola_meetings` with the following natural-language queries (run in parallel):
+Using the meeting list from Call E, call `granola-query_granola_meetings` with the following natural-language queries (run in parallel):
 - "What objections or concerns came up in customer or sales calls this week?"
 - "What follow-ups or next steps were committed to in meetings this week?"
 - "Were any competitors mentioned in meetings this week?"

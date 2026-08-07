@@ -1,20 +1,20 @@
 ---
-name: funnel-metrics
+name: gtm-funnel-metrics
 description: >
   Calculates GTM funnel metrics from HubSpot — stage-by-stage conversion rates, win rate,
   average deal velocity, and a revenue forecast weighted by historical conversion rates.
   Use when asked for funnel performance, conversion rates, win/loss analysis, deal velocity,
-  or revenue forecasting. Invoke with /funnel-metrics.
+  or revenue forecasting. Invoke with /gtm-funnel-metrics.
 ---
 
 # Funnel Metrics
 
 ## MCP Requirements
 
-| MCP Server | Tool                         | Purpose                                              |
-|------------|------------------------------|------------------------------------------------------|
-| `Hubspot`  | `Hubspot:search_crm_objects` | Fetch deals within a time period for analysis        |
-| `Hubspot`  | `Hubspot:get_properties`     | Resolve deal stage enum values and their order       |
+| MCP Server | Tool                           | Purpose                                                              |
+|------------|--------------------------------|----------------------------------------------------------------------|
+| `hubspot`  | `hubspot-search_crm_objects`   | Fetch New Broker Sales pipeline deals within a time period for analysis |
+| `hubspot`  | `hubspot-get_properties`       | Resolve deal stage enum values and their order                       |
 
 ## When to use this skill
 
@@ -37,21 +37,21 @@ Default to the last 90 days if no period is specified. Ask if the user wants to 
 
 ### Step 2: Fetch stage definitions and deals (run in parallel)
 
-**Call A** — `Hubspot:get_properties` with:
+**Call A** — `hubspot-get_properties` with:
 - `objectType`: `deals`
 - `propertyName`: `dealstage`
 
 Extract the ordered list of stage labels and internal values. This defines the funnel structure and the order of stages.
 
-**Call B** — `Hubspot:search_crm_objects` for closed deals:
+**Call B** — `hubspot-search_crm_objects` for closed deals:
 - `objectType`: `deals`
-- `filterGroups`: `closedate` within the analysis window; `dealstage` is `closedwon` OR `closedlost`
+- `filterGroups`: `closedate` within the analysis window; `dealstage` is `closedwon` OR `closedlost`; `pipeline` = `"811852437"` (New Broker Sales)
 - `properties`: `["dealname", "dealstage", "amount", "closedate", "createdate", "hubspot_owner_id"]`
 - `limit`: 200
 
-**Call C** — `Hubspot:search_crm_objects` for all deals created in the period:
+**Call C** — `hubspot-search_crm_objects` for all deals created in the period:
 - `objectType`: `deals`
-- `filterGroups`: `createdate` within the analysis window
+- `filterGroups`: `createdate` within the analysis window; `pipeline` = `"811852437"` (New Broker Sales)
 - `properties`: `["dealname", "dealstage", "amount", "createdate", "hubspot_owner_id"]`
 - `limit`: 200
 

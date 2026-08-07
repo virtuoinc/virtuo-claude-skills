@@ -1,10 +1,10 @@
 ---
-name: email-triage
+name: virtuo-email-triage
 description: >
   Fetches recent or unread emails from Microsoft 365, groups them by priority,
   and delivers a tiered summary so the user can quickly identify what needs
   action. Optionally flags, moves, marks as read, or replies to emails.
-  Handles both personal and shared mailboxes. Invoke with /email-triage.
+  Handles both personal and shared mailboxes. Invoke with /virtuo-email-triage.
 ---
 
 # Triaging Emails
@@ -13,11 +13,11 @@ description: >
 
 | MCP Server      | Tool                                   | Purpose                                        |
 |-----------------|----------------------------------------|------------------------------------------------|
-| `Microsoft 365` | `Microsoft 365:list_messages`          | Fetch emails from inbox with filters           |
+| `Microsoft 365` | `Mail.Read`          | Fetch emails from inbox with filters           |
 | `Microsoft 365` | `Microsoft 365:get_message`            | Retrieve full email body for context           |
-| `Microsoft 365` | `Microsoft 365:send_mail`              | Send a reply on behalf of the user             |
-| `Microsoft 365` | `Microsoft 365:update_message`         | Flag, mark as read, or move an email           |
-| `Microsoft 365` | `Microsoft 365:list_shared_messages`   | Access shared/delegated mailboxes (optional)   |
+| `Microsoft 365` | `Mail.ReadWrite`              | Draft a reply on behalf of the user - can only draft, cannot send            |
+| `Microsoft 365` | `Mail.ReadWrite`         | Flag, mark as read, or move an email           |
+| `Microsoft 365` | `Mail.Read.Shared`   | Access shared/delegated mailboxes (optional)   |
 
 > Tool names are based on common MCP conventions — verify exact names against your configured MCP servers in Claude Desktop.
 
@@ -36,7 +36,7 @@ Do NOT use this skill when:
 
 ### Step 1: Fetch emails
 
-Call `Microsoft 365:list_messages` with:
+Call `Mail.Read` with:
 - `folder`: inbox
 - `filter`: `isRead eq false` (unread only by default)
 - `orderby`: `receivedDateTime desc`
@@ -45,7 +45,7 @@ Call `Microsoft 365:list_messages` with:
 
 If the user specified a time range (e.g. "since yesterday", "last 2 days"), add a `receivedDateTime ge [ISO date]` filter.
 
-If the user mentioned a shared mailbox, also call `Microsoft 365:list_shared_messages` for that mailbox.
+If the user mentioned a shared mailbox, also call `Mail.Read.Shared` for that mailbox.
 
 ### Step 2: Categorize into priority tiers
 
@@ -93,9 +93,9 @@ Format the output as:
 ### Step 4: Offer actions
 
 After presenting the triage, offer the following for each Tier 1 email:
-- **Reply** — draft and send a reply via `Microsoft 365:send_mail`
-- **Flag** — call `Microsoft 365:update_message` to set `flag.flagStatus: flagged`
-- **Mark as read** — call `Microsoft 365:update_message` to set `isRead: true`
+- **Reply** — draft and send a reply via `Mail.ReadWrite`
+- **Flag** — call `Mail.ReadWrite` to set `flag.flagStatus: flagged`
+- **Mark as read** — call `Mail.ReadWrite` to set `isRead: true`
 
 For bulk Tier 3 items, offer to mark all as read in one step.
 

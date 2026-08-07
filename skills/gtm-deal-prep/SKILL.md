@@ -1,25 +1,25 @@
 ---
-name: deal-prep
+name: gtm-deal-prep
 description: >
   Prepares a sales-focused briefing before a customer or prospect meeting — pulls the HubSpot
   deal and contact context, retrieves past meeting themes and open commitments from Granola,
   and runs web research on the company if it is a first meeting or the deal context is stale.
   Produces a briefing card with deal status, relationship history, and talking points mapped to
   the current deal stage. Use when preparing for a sales call, discovery call, demo, or any
-  external meeting with a prospect or customer. Invoke with /deal-prep.
+  external meeting with a prospect or customer. Invoke with /gtm-deal-prep.
 ---
 
 # Deal Prep
 
 ## MCP Requirements
 
-| MCP Server      | Tool                                | Purpose                                                  |
-|-----------------|-------------------------------------|----------------------------------------------------------|
-| `Microsoft 365` | `Microsoft 365:get_calendar_events` | Find the upcoming meeting if not specified by the user   |
-| `Hubspot`       | `Hubspot:search_crm_objects`        | Look up the contact record and associated open deal      |
-| `Hubspot`       | `Hubspot:search_conversations`      | Retrieve logged emails, calls, and notes for the contact |
-| `Granola`       | `Granola:query_granola_meetings`    | Pull themes and commitments from past recorded meetings  |
-| `Web search`    | `Web search:web_search`             | Research the company if first meeting or stale context   |
+| MCP Server      | Tool                                    | Purpose                                                              |
+|-----------------|-----------------------------------------|----------------------------------------------------------------------|
+| `Microsoft 365` | `Calendars.Read`                        | Find the upcoming meeting if not specified by the user               |
+| `hubspot`       | `hubspot-search_crm_objects`            | Look up the contact record and open deal in the New Broker Sales pipeline |
+| `hubspot`       | `hubspot-query_crm_data`                | Query engagement records (emails, calls, notes) for the contact      |
+| `granola`       | `granola-query_granola_meetings`        | Pull themes and commitments from past recorded meetings              |
+| `Web search`    | `web_search`                            | Research the company if first meeting or stale context               |
 
 ## When to use this skill
 
@@ -40,30 +40,31 @@ Do NOT use this skill when:
 
 If the user named a specific company or person, use that directly.
 
-Otherwise, call `Microsoft 365:get_calendar_events` to find the next upcoming external meeting. Extract the external attendee email(s) and company name from the event. Ask the user to confirm if multiple external meetings are returned.
+Otherwise, call `Calendars.Read` to find the next upcoming external meeting. Extract the external attendee email(s) and company name from the event. Ask the user to confirm if multiple external meetings are returned.
 
 ### Step 2: Look up CRM and conversation history (run all in parallel)
 
-**Call A** — `Hubspot:search_crm_objects` for the contact:
+**Call A** — `hubspot-search_crm_objects` for the contact:
 - `objectType`: `contacts`
 - Filter by attendee email address
 - `properties`: `["firstname", "lastname", "email", "company", "jobtitle", "hs_lead_status", "hubspot_owner_id", "notes_last_contacted"]`
 
-**Call B** — `Hubspot:search_crm_objects` for the associated deal:
+**Call B** — `hubspot-search_crm_objects` for the associated deal:
 - `objectType`: `deals`
 - Filter by associated contact ID (from Call A); if no contact found, filter by company name
+- Filter `pipeline` = `"811852437"` (New Broker Sales — the only pipeline in scope)
 - `properties`: `["dealname", "dealstage", "amount", "closedate", "hs_lastmodifieddate", "hubspot_owner_id", "description"]`
 - Sort by `hs_lastmodifieddate` descending, limit 3
 
-**Call C** — `Hubspot:search_conversations`:
-- Search by the contact's email to retrieve logged comms (emails, calls, notes)
+**Call C** — `hubspot-query_crm_data`:
+- Query engagement records (emails, calls, notes) for the contact by email address
 
-**Call D** — `Granola:query_granola_meetings`:
+**Call D** — `granola-query_granola_meetings`:
 - Query: "What happened in our meetings with [contact name] or [company name]?"
 
 ### Step 3: Run web research if needed
 
-Run `Web search:web_search` if **any** of the following are true:
+Run `web_search` if **any** of the following are true:
 - No Granola meetings were found (first meeting)
 - The most recent HubSpot deal activity is more than 60 days ago
 - The user explicitly asked for company background

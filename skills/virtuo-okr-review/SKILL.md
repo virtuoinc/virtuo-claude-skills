@@ -1,5 +1,5 @@
 ---
-name: asana-okr-review
+name: virtuo-okr-review
 description: >
   Get a health summary of Virtuo OKRs and goals for the current quarter.
 ---
